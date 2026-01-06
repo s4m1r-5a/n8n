@@ -1,0 +1,39 @@
+services:
+  n8n:
+    # image: docker.n8n.io/n8nio/n8n:latest
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    ports:
+      - '5678:5678'
+    volumes:
+      - n8n_data:/home/node/.n8n
+      # - ~/.n8n:/root/.n8n
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+      - N8N_TRUSTED_PROXY=true
+      # - N8N_PROTOCOL=https
+      - N8N_HOST=n8n.gestionapp.co
+      # - N8N_EDITOR_BASE_URL=https://n8n.gestionapp.co
+      - WEBHOOK_TUNNEL_URL=https://n8n.gestionapp.co/
+      - WEBHOOK_URL=https://n8n.gestionapp.co/
+      # - N8N_METRICS=true
+      # - N8N_DIAGNOSTICS_ENABLED=true
+      # - N8N_USER_FOLDER=/home/node/.n8n
+    networks:
+      - proxy_network
+    # healthcheck:
+    #   test: ["CMD", "wget", "--spider", "http://localhost:5678/healthz"]
+    #   interval: 30s
+    #   timeout: 10s
+    #   retries: 3
+
+networks:
+  proxy_network:
+    external: true
+
+volumes:
+  n8n_data:
+    driver: local
